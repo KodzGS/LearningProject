@@ -1,46 +1,54 @@
 package pageObject;
 
 import org.openqa.selenium.By;
+import org.openqa.selenium.Keys;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
+import java.time.Duration;
+import java.util.List;
 
 public class GoogleHomePage {
-    public static WebDriver driver;
+    public WebDriver driver;
+    public WebDriverWait wait;
+
     /**
      * @param driver The interface that every driver class must implement.
      */
-    private GoogleHomePage(WebDriver driver) {
-        GoogleHomePage.driver = driver;
+    public GoogleHomePage(WebDriver driver) {
+
+        // Set up explicit wait
+        wait = new WebDriverWait(driver, Duration.ofSeconds(20));
+        this.driver = driver;
     }
 
-    /**
-     * @throws InterruptedException using thread sleep to interrupt the automation
-     */
-    public static void OpenGoogle(WebDriver driver) throws InterruptedException {
+    public void openGoogle() {
         driver.manage().window().maximize();
         driver.get("https://www.google.co.uk");
-        Thread.sleep(4000);
-    }
-    /**
-     * @return this static value will return the ID of the cookie button within google
-     */
-    public static WebElement CookiesSearch(WebDriver driver) {
-        return driver.findElement(By.id("L2AGLb"));
     }
 
-    /**
-     * @return this static value will return the element name of the google button
-     */
-    public static WebElement GoogleButtonSearch(WebDriver driver) {
-        return driver.findElement(By.name("btnK"));
+    public void acceptCookies() {
+       //driver.findElement(By.id("L2AGLb")).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.id("L2AGLb"))).click();
     }
 
-    /**
-     * @return this static value will return the element name of the search box button
-     */
-    public static WebElement EnterSearchTerm(WebDriver driver) {
-        return driver.findElement(By.name("q"));
+    public void googleButtonSearch() {
+       // driver.findElement(By.name("btnK")).click();
+        wait.until(ExpectedConditions.elementToBeClickable(By.name("btnK"))).sendKeys(Keys.RETURN);
+    }
+
+    public void enterSearchTerm() {
+       // driver.findElement(By.name("q")).sendKeys("BBC News");
+        wait.until(ExpectedConditions.elementToBeClickable(By.name("q"))).sendKeys("BBC News");
+    }
+
+    public List<WebElement> getSearchResults() {
+       return driver.findElements(By.xpath("//a/h3"));
+       //return wait.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath("//*[@id='rcnt']//a/h3")));
     }
 
 }
+
+// explicit waits
